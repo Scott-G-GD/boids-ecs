@@ -1,0 +1,11 @@
+# build dirs
+xcode/
+Debug/
+Release/
+bin/
+
+# build files
+*.exe
+*.out
+*.o
+
