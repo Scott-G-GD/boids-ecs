@@ -1,3 +1,6 @@
 [submodule "lib/easy-ecs"]
 	path = lib/easy-ecs
 	url = git@github.com:Scott-G-GD/easy-ecs
+[submodule "easy-ecs"]
+	path = easy-ecs
+	url = git@github.com:Scott-G-GD/easy-ecs.git
