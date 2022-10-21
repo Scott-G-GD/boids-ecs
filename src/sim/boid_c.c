@@ -88,7 +88,6 @@ void system_draw_boids(ecsEntityId* entities, ecsComponentMask* components, size
 {
 	boid_c* boid;
 	
-	//SDL_FPoint* points = malloc(count * sizeof(SDL_FPoint));
 	int tw, th;
 	SDL_QueryTexture(boid_texture, NULL, NULL, &tw, &th);
 	SDL_Rect srcrect = {
@@ -104,7 +103,7 @@ void system_draw_boids(ecsEntityId* entities, ecsComponentMask* components, size
 	for(size_t i = 0; i < count; ++i)
 	{
 		boid = ecsGetComponentPtr(entities[i], boid_component);
-		//SDL_RenderCopy(renderer, boid_texture, &srcrect, &dstrect);
+		
 		dstrect.x = boid->position.x - hw;
 		dstrect.y = boid->position.y - hh;
 		SDL_RenderCopyExF(renderer, boid_texture,
