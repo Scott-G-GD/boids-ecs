@@ -33,7 +33,6 @@ void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count
 		uiSlider(&(alignment.force), 0.0f, 2.f, 0.01f);
 		uiAddLine();
 		uiSlider(&(separation.range), 0.1f, 100.f, 1.f);
-		//uiSlider(&(separation.force), 0.0f, 2.f, .01f);
 		uiAddLine();
 		uiSlider(&(cohesion.range), 0.1f, 100.f, 1.f);
 		uiSlider(&(cohesion.force), 0.0f, 2.f, .01f);
