@@ -17,7 +17,7 @@ extern void uiSetTarget(SDL_Renderer* renderer);
 
 extern void uiBeginFrame();
 
-extern int uiBeginWindow(SDL_Rect* rect);
+extern int uiBeginWindow(SDL_Rect* rect, int* isActive);
 
 extern void uiEndWindow();
 

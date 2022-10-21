@@ -20,14 +20,11 @@ void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count
 	uiBeginFrame();
 	
 	SDL_Rect rect = {
-		10, 30, 200, 10
+		0, 0, 250, 0
 	};
-	uiBeginWindow(&rect);
+	SDL_GetRendererOutputSize(renderer, NULL, &rect.h);
 	
-	if(uiButton())
-		showSliders = !showSliders;
-	
-	if(showSliders)
+	if(uiBeginWindow(&rect, &showSliders))
 	{
 		uiSlider(&boid_max_velocity, 10.f, 100.f, 5.f);
 		uiSlider(&boid_acceleration, 10.f, 100.f, 5.f);

@@ -20,6 +20,7 @@ int uiMouseX, uiMouseY;
 SDL_Rect uiCurrentWindow;
 int uiSingleLineHeight = 30;
 int uiLineSpacing = 5;
+int uiWindowPadding = 10;
 int uiTotalHeight;
 
 void uiUpdateMouseState()
@@ -66,12 +67,32 @@ void uiAddLines(int n)
 
 void uiAddLine() { uiAddLines(1); }
 
-int uiBeginWindow(SDL_Rect* rect)
+int uiBeginWindow(SDL_Rect* rect, int* isActive)
 {
 	uiTotalHeight = 0;
 	memcpy(&uiCurrentWindow, rect, sizeof(SDL_Rect));
 	
-	return 1;
+	if(*isActive)
+	{
+		SDL_SetRenderDrawColor(uiTarget, 20, 20, 20, 255);
+		SDL_RenderFillRect(uiTarget, rect);
+	}
+	
+	int toggled = uiButton();
+	
+	uiCurrentWindow.x += uiWindowPadding;
+	uiCurrentWindow.y += uiWindowPadding;
+	uiCurrentWindow.w -= uiWindowPadding*2;
+	uiCurrentWindow.h -= uiWindowPadding*2;
+	
+	if(toggled)
+	{
+		int last = *isActive;
+		*isActive = !(*isActive);
+		return last;
+	}
+	
+	return (*isActive);
 }
 
 int uiInArea(SDL_Rect* r, int x, int y)
@@ -93,21 +114,19 @@ int uiSlider(float* value, float min, float max, float step)
 	SDL_Rect position = uiCurrentWindow;
 	position.y += uiTotalHeight;
 	position.h = uiSingleLineHeight;
+	position.x += SLIDER_WIDTH/2;
+	position.w -= SLIDER_WIDTH;
 	
 	SDL_Rect lineRect = {
 		position.x, position.y + uiSingleLineHeight/2,
 		position.w, LINE_THICKNESS
-	};
-	SDL_Rect totalRect = {
-		position.x - SLIDER_WIDTH/2, position.y,
-		position.w + SLIDER_WIDTH/2, uiSingleLineHeight
 	};
 	
 	SDL_Color sliderColor = {230, 230, 230, 255};
 
 	if(uiCurrentMouseState & SDL_BUTTON_LEFT)
 	{
-		if(uiCurrentSelected == 0 && (uiLastSelected == (intptr_t)value || uiInArea(&totalRect, uiMouseX, uiMouseY)))
+		if(uiCurrentSelected == 0 && (uiLastSelected == (intptr_t)value || uiInArea(&position, uiMouseX, uiMouseY)))
 		{
 			uiSelect(value);
 		}
@@ -136,7 +155,7 @@ int uiSlider(float* value, float min, float max, float step)
 	}
 	
 	SDL_Rect sliderRect = {
-		position.x + valuePercentage * position.w, position.y,
+		position.x + valuePercentage * position.w - SLIDER_WIDTH/2, position.y,
 		SLIDER_WIDTH, uiSingleLineHeight
 	};
 	
