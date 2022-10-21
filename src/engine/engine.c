@@ -4,6 +4,7 @@
 #include <SDL2/SDL_image.h>
 #include <ecs.h>
 #include "adb.h"
+#include "ui.h"
 #include <stdlib.h>
 
 SDL_Window* window;
@@ -78,6 +79,8 @@ void engine_init()
 
 	ecsInit();
 
+	uiInit(renderer);
+
 	ecsEnableSystem(&system_window_clear, nocomponent, ECS_NOQUERY, 0, -100);
 	
 	sim_init();
@@ -118,6 +121,7 @@ void engine_handle_event(SDL_Event* event)
 void engine_clean()
 {
 	sim_quit();
+	uiTerminate();
 	close_asset_database();
 	ecsTerminate();
 	SDL_DestroyRenderer(renderer);
