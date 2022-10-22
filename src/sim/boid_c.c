@@ -38,6 +38,8 @@ behaviour_t mouse_interact = {
 	.force = -1000.f
 };
 
+SDL_Rect boid_available_area = {0,0,800, 800};
+
 void system_boid_update(ecsEntityId* entities, ecsComponentMask* components, size_t count, float delta_time)
 {
 	boid_c* boid, *other;
@@ -263,22 +265,25 @@ void system_boids_wall_avoid(ecsEntityId* entities, ecsComponentMask* components
 	
 	boid_c* boid;
 	fvec force;
-	int iw, ih;
-	SDL_GetRendererOutputSize(renderer, &iw, &ih);
-	float w = (float)iw, h = (float)ih;
+
+	SDL_Rect limits = boid_available_area;
+	limits.x += wall_avoid.range;
+	limits.w -= wall_avoid.range*2;
+	limits.y += wall_avoid.range;
+	limits.h -= wall_avoid.range*2;
 	
 	for(size_t i = 0; i < count; ++i)
 	{
 		boid = ecsGetComponentPtr(entities[i], boid_component);
 		force = (fvec){ 0.f, 0.f };
 		
-		if(boid->position.x >= w - wall_avoid.range)
+		if(boid->position.x >= limits.x + limits.w)
 			force.x = -1.f;
-		if(boid->position.x <= wall_avoid.range)
+		if(boid->position.x <= limits.x)
 			force.x = 1.f;
-		if(boid->position.y >= h - wall_avoid.range)
+		if(boid->position.y >= limits.y + limits.h)
 			force.y = -1.f;
-		if(boid->position.y <= wall_avoid.range)
+		if(boid->position.y <= limits.y)
 			force.y = 1.f;
 		
 		vnor(&force, &force);
