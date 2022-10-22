@@ -84,7 +84,7 @@ void sim_init()
 		.w = w, .h = h
 	};
 	
-	const int boids = 200;
+	const int boids = 800;
 	fvec position = {9, 0};
 	ecsEntityId entity;
 	boid_c* boid;
