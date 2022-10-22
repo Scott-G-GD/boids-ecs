@@ -38,6 +38,7 @@ extern behaviour_t separation;
 extern behaviour_t cohesion;
 extern behaviour_t wall_avoid;
 extern behaviour_t mouse_interact;
+extern struct SDL_Rect boid_available_area;
 
 extern void system_boid_update(ecsEntityId*, ecsComponentMask*, size_t, float);
 extern void system_boids_cohesion(ecsEntityId*, ecsComponentMask*, size_t, float);
