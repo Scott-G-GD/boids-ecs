@@ -1,5 +1,6 @@
 # build dirs
 xcode/
+kdev/
 Debug/
 Release/
 bin/
