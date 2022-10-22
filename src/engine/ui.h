@@ -23,6 +23,8 @@ extern void uiEndWindow();
 
 extern void uiAddLines(int n);
 extern void uiAddLine();
+extern void uiAddPixels(int px);
+extern void uiSameLine(int n);
 
 extern int uiSlider(float* value, float min, float max, float step);
 extern int uiButton();

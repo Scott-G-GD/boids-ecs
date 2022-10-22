@@ -22,6 +22,9 @@ int uiSingleLineHeight = 30;
 int uiLineSpacing = 5;
 int uiWindowPadding = 10;
 int uiTotalHeight;
+int uiRenderSameLine;
+
+SDL_Rect uiNextLineRect;
 
 void uiUpdateMouseState()
 {
@@ -62,15 +65,43 @@ void uiBeginFrame()
 
 void uiAddLines(int n)
 {
-	uiTotalHeight += n * (uiSingleLineHeight + uiLineSpacing);
+	if(uiRenderSameLine > 0)
+	{
+		uiRenderSameLine--;
+		uiNextLineRect.x += uiNextLineRect.w;
+	}
+	else
+	{
+		uiAddPixels(n * (uiSingleLineHeight + uiLineSpacing));
+	}
 }
 
 void uiAddLine() { uiAddLines(1); }
+
+void uiAddPixels(int px)
+{
+	uiTotalHeight += px;
+	uiNextLineRect = uiCurrentWindow;
+	uiNextLineRect.h = uiSingleLineHeight;
+	uiNextLineRect.y += uiTotalHeight;
+}
+
+void uiSameLine(int n)
+{
+	if(n > 1)
+	{
+		uiRenderSameLine += n-1;
+		
+		uiNextLineRect.w /= n;
+	}
+}
 
 int uiBeginWindow(SDL_Rect* rect, int* isActive)
 {
 	uiTotalHeight = 0;
 	memcpy(&uiCurrentWindow, rect, sizeof(SDL_Rect));
+	uiNextLineRect = uiCurrentWindow;
+	uiNextLineRect.h = uiSingleLineHeight;
 	
 	if(*isActive)
 	{
@@ -111,9 +142,7 @@ int uiSlider(float* value, float min, float max, float step)
 	int valueChanged = 0;
 	float valuePercentage = ((*value)-min) / (max - min);
 	
-	SDL_Rect position = uiCurrentWindow;
-	position.y += uiTotalHeight;
-	position.h = uiSingleLineHeight;
+	SDL_Rect position = uiNextLineRect;
 	position.x += SLIDER_WIDTH/2;
 	position.w -= SLIDER_WIDTH;
 	
@@ -170,9 +199,7 @@ int uiSlider(float* value, float min, float max, float step)
 
 int uiButton()
 {
-	SDL_Rect position = uiCurrentWindow;
-	position.h = uiSingleLineHeight;
-	position.y += uiTotalHeight;
+	SDL_Rect position = uiNextLineRect;
 	
 	SDL_SetRenderDrawColor(uiTarget, 100, 100, 100, 255);
 	SDL_RenderFillRect(uiTarget, &position);
