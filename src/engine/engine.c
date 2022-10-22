@@ -2,10 +2,11 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <stdlib.h>
+#include <time.h>
 #include <ecs.h>
 #include "adb.h"
 #include "ui.h"
-#include <stdlib.h>
 
 SDL_Window* window;
 SDL_Renderer* renderer;

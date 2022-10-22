@@ -62,7 +62,7 @@ void sim_init()
 	asset_handle_t arrow_asset = load_asset("boid.png");
 	boid_texture = get_asset(arrow_asset);
 	
-	const int boids = 600;
+	const int boids = 200;
 	fvec position = {9, 0};
 	ecsEntityId entity;
 	boid_c* boid;

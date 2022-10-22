@@ -18,6 +18,8 @@ include_directories(SDL2 PRIVATE "${CMAKE_SOURCE_DIR}/src/engine" "${CMAKE_SOURC
 if(APPLE)
 	include_directories("/opt/homebrew/include/")
 	link_directories("/opt/homebrew/lib/" "./lib/")
+else()
+	link_directories("./lib/")
 endif()
 
 file(
@@ -29,7 +31,7 @@ file(
 add_library(sim STATIC ${SIM_SRC})
 set_target_properties(sim PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-target_link_libraries(sim SDL2 SDL2_image ecs)
+target_link_libraries(sim SDL2 SDL2_image ecs c m)
 
 file(
 	GLOB_RECURSE
@@ -38,4 +40,4 @@ file(
 )
 
 add_executable(engine ${ENGINE_SRC})
-target_link_libraries(engine sim SDL2 SDL2_image ecs)
+target_link_libraries(engine sim SDL2 SDL2_image ecs c m)
