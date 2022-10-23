@@ -40,19 +40,12 @@ behaviour_t mouse_interact = {
 
 SDL_Rect boid_available_area = {0,0,800, 800};
 
-void system_boid_update(ecsEntityId* entities, ecsComponentMask* components, size_t count, float delta_time)
+void system_boid_update_position(ecsEntityId* entities, ecsComponentMask* components, size_t count, float delta_time)
 {
-	boid_c* boid, *other;
+	boid_c* boid;
 	fvec force, velocity;
-	float dist;
 	float acceleration = boid_acceleration * delta_time;
 	int w, h;
-	
-	float max_range = alignment.range;
-	max_range = separation.range > max_range ? separation.range : max_range;
-	max_range = cohesion.range > max_range ? cohesion.range : max_range;
-	
-	SDL_GetRendererOutputSize(renderer, &w, &h);
 	
 	for(size_t i = 0; i < count; i++)
 	{
@@ -71,12 +64,31 @@ void system_boid_update(ecsEntityId* entities, ecsComponentMask* components, siz
 		vmulf(&velocity, &boid->velocity, delta_time);
 		vadd(&boid->position, &boid->position, &velocity);
 		
-		size_t hits = 0;
+	}
+}
+
+void system_boid_update_near(ecsEntityId* entities, ecsComponentMask* components, size_t count, float delta_time)
+{
+	float dist;
+	boid_c* boid, *other;
+	
+	float max_range = alignment.range;
+	max_range = separation.range > max_range ? separation.range : max_range;
+	max_range = cohesion.range > max_range ? cohesion.range : max_range;
+	
+	size_t hits = 0;
+	
+	for(size_t i = 0; i < count; ++i)
+	{
+		boid = ecsGetComponentPtr(entities[i], boid_component);
+		hits = 0;
+		
 		memset(boid->near, noentity, sizeof(boid->near));
 		for(size_t j = 0; j < count && hits < BOID_NEAR_COUNT; ++j)
 		{
 			other = ecsGetComponentPtr(entities[j], boid_component);
 			dist = vdist(&boid->position, &other->position);
+			
 			assert(!isnan(dist));
 			if(dist < max_range)
 			{

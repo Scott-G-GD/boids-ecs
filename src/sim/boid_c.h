@@ -40,7 +40,7 @@ extern behaviour_t wall_avoid;
 extern behaviour_t mouse_interact;
 extern struct SDL_Rect boid_available_area;
 
-extern void system_boid_update(ecsEntityId*, ecsComponentMask*, size_t, float);
+extern void system_boid_update_position(ecsEntityId*, ecsComponentMask*, size_t, float);
 extern void system_boids_cohesion(ecsEntityId*, ecsComponentMask*, size_t, float);
 extern void system_boids_separation(ecsEntityId*, ecsComponentMask*, size_t, float);
 extern void system_boids_alignment(ecsEntityId*, ecsComponentMask*, size_t, float);
@@ -48,5 +48,6 @@ extern void system_boids_wall_avoid(ecsEntityId*, ecsComponentMask*, size_t, flo
 extern void system_boids_wrap(ecsEntityId*, ecsComponentMask*, size_t, float);
 extern void system_draw_boids(ecsEntityId*, ecsComponentMask*, size_t, float);
 extern void system_boid_mouse(ecsEntityId*, ecsComponentMask*, size_t, float);
+extern void system_boid_update_near(ecsEntityId*, ecsComponentMask*, size_t, float);
 
 #endif /* boid_c_h */

@@ -7,12 +7,7 @@
 #define BOID_NEAR_COUNT (200)
 #include "boid_c.h"
 
-void sim_config(engine_init_t* config)
-{
-	config->window_width = 1000;
-	config->window_height = 800;
-	config->window_init_flags |= SDL_WINDOW_RESIZABLE;
-}
+int boid_spawn_num;
 
 void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count, float deltaTime)
 {
@@ -60,36 +55,24 @@ void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count
 	}
 }
 
-void sim_init()
+void sim_config(engine_init_t* config)
 {
-	boid_component = ecsRegisterComponent(boid_c);
-	
-	ecsEnableSystem(&system_boid_update,		boid_component,	ECS_QUERY_ALL,	0, 100);
-	ecsEnableSystem(&system_draw_boids,			boid_component,	ECS_QUERY_ALL,	0, 200);
-	ecsEnableSystem(&system_boids_wall_avoid,	boid_component,	ECS_QUERY_ALL,	8, 300);
-	ecsEnableSystem(&system_boids_cohesion,		boid_component,	ECS_QUERY_ALL,	8, 400);
-	ecsEnableSystem(&system_boids_alignment,	boid_component,	ECS_QUERY_ALL,	8, 410);
-	ecsEnableSystem(&system_boids_separation,	boid_component,	ECS_QUERY_ALL,	8, 420);
-	ecsEnableSystem(&system_boid_mouse,			boid_component,	ECS_QUERY_ALL,	8, 430);
-	ecsEnableSystem(&system_draw_gui,			nocomponent,	ECS_NOQUERY,	0, 500);
-	
+	config->window_width = 1000;
+	config->window_height = 800;
+	config->window_init_flags |= SDL_WINDOW_RESIZABLE;
+	boid_spawn_num = 500;
+}
+
+void spawn_boids()
+{
 	int w, h;
 	SDL_GetRendererOutputSize(renderer, &w, &h);
 	
-	asset_handle_t blur_asset = load_asset("blur.png");
-	asset_handle_t arrow_asset = load_asset("boid.png");
-	boid_texture = get_asset(arrow_asset);
-	boid_available_area = (SDL_Rect){
-		.x = 0, .y = 0,
-		.w = w, .h = h
-	};
-	
-	const int boids = 800;
 	fvec position = {9, 0};
 	ecsEntityId entity;
 	boid_c* boid;
 	
-	for(int i = 0; i < boids; i++)
+	for(int i = 0; i < boid_spawn_num; i++)
 	{
 		position = (fvec){rand() % w, rand() % h};
 		if((entity = ecsCreateEntity(boid_component)) != noentity)
@@ -106,6 +89,34 @@ void sim_init()
 			exit(2);
 		}
 	}
+}
+
+void sim_init()
+{
+	boid_component = ecsRegisterComponent(boid_c);
+	
+	ecsEnableSystem(&system_boid_update_position,		boid_component,	ECS_QUERY_ALL,	8, 50);
+	ecsEnableSystem(&system_boid_update_near,		boid_component,	ECS_QUERY_ALL,	0, 100);
+	ecsEnableSystem(&system_draw_boids,			boid_component,	ECS_QUERY_ALL,	0, 200);
+	ecsEnableSystem(&system_boids_wall_avoid,	boid_component,	ECS_QUERY_ALL,	8, 300);
+	ecsEnableSystem(&system_boids_cohesion,		boid_component,	ECS_QUERY_ALL,	8, 400);
+	ecsEnableSystem(&system_boids_alignment,	boid_component,	ECS_QUERY_ALL,	8, 410);
+	ecsEnableSystem(&system_boids_separation,	boid_component,	ECS_QUERY_ALL,	8, 420);
+	ecsEnableSystem(&system_boid_mouse,			boid_component,	ECS_QUERY_ALL,	8, 430);
+	ecsEnableSystem(&system_draw_gui,			nocomponent,	ECS_NOQUERY,	0, 500);
+
+	int w, h;
+	SDL_GetRendererOutputSize(renderer, &w, &h);
+	
+	asset_handle_t blur_asset = load_asset("blur.png");
+	asset_handle_t arrow_asset = load_asset("boid.png");
+	boid_texture = get_asset(arrow_asset);
+	boid_available_area = (SDL_Rect){
+		.x = 0, .y = 0,
+		.w = w, .h = h
+	};
+	
+	spawn_boids();
 }
 
 void sim_quit()
