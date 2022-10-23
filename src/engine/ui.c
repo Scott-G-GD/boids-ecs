@@ -32,7 +32,14 @@ void uiUpdateMouseState()
 	uiCurrentMouseState = SDL_GetMouseState(&uiMouseX, &uiMouseY);
 }
 
-int uiCanSelect() { return uiCurrentSelected == 0 && uiLastSelected == 0; }
+int uiCanSelect(void* ptr)
+{
+	intptr_t item = (intptr_t)ptr;
+	
+	return
+	(uiCurrentSelected == 0 || uiCurrentSelected == item)
+	&& (uiLastSelected == 0 || uiLastSelected == item);
+}
 
 void uiSelect(void* ptr)
 {
@@ -155,7 +162,7 @@ int uiSlider(float* value, float min, float max, float step)
 
 	if(uiCurrentMouseState & SDL_BUTTON_LEFT)
 	{
-		if(uiCurrentSelected == 0 && (uiLastSelected == (intptr_t)value || uiInArea(&position, uiMouseX, uiMouseY)))
+		if(uiCanSelect(value) && uiInArea(&position, uiMouseX, uiMouseY))
 		{
 			uiSelect(value);
 		}
@@ -208,7 +215,7 @@ int uiButton()
 	
 	if((uiLastMouseState & SDL_BUTTON_LEFT) == 0 && (uiCurrentMouseState & SDL_BUTTON_LEFT) != 0)
 	{
-		if(uiCanSelect() && uiInArea(&position, uiMouseX, uiMouseY))
+		if(uiCanSelect(0) && uiInArea(&position, uiMouseX, uiMouseY))
 		{
 			return 1;
 		}
