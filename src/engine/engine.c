@@ -47,17 +47,23 @@ int main(int argc, char* argv[])
 
 void engine_init()
 {
+	// set the frame start time here to ensure there will be time passed when engine_run is called
 	frame_start_time = (float)clock() / CLOCKS_PER_SEC;
 	engine_wants_to_quit = 0;
-	engine_init_t init_settings;
-	default_engine_init_settings(&init_settings);
+	// init asset database for 100 assets
 	init_asset_database(100);
 
+	// register default image file handlers
 	register_file_handler(".png", &asset_load_sdl_image, &asset_free_sdl_image);
 	register_file_handler(".jpg", &asset_load_sdl_image, &asset_free_sdl_image);
 
+	// load default init settings
+	engine_init_t init_settings;
+	default_engine_init_settings(&init_settings);
+	// allow sim to adjust init settings as needed
 	sim_config(&init_settings);
 
+	// init sdl, create window and create renderer from window
 	SDL_Init(init_settings.sdl_init_flags);
 	window = SDL_CreateWindow("BOIDS!!",
 							  SDL_WINDOWPOS_CENTERED,
@@ -78,14 +84,18 @@ void engine_init()
 		exit(2);
 	}
 
+	// initialize runtime object database
 	ecsInit();
 
+	// initialize imgui renderer
 	uiInit(renderer);
 
+	// enable screen refresh system
 	ecsEnableSystem(&system_window_clear, nocomponent, ECS_NOQUERY, 0, -100);
 	
+	// initialize sim
 	sim_init();
-	
+	// run created tasks
 	ecsRunTasks();
 }
 
@@ -121,10 +131,12 @@ void engine_handle_event(SDL_Event* event)
 
 void engine_clean()
 {
+	// quit sim, ui asset database, ecs
 	sim_quit();
 	uiTerminate();
 	close_asset_database();
 	ecsTerminate();
+	// delete renderer and window, quit sdl
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -132,12 +144,9 @@ void engine_clean()
 
 void system_window_clear(ecsEntityId* entities, ecsComponentMask* components, size_t size, float delta_time)
 {
-	static float render_time;
-	render_time += delta_time;
-	//if(render_time < 1.f/20.f) return;
-	
-	render_time = 0;
+	// swap buffer
 	SDL_RenderPresent(renderer);
+	// clear screen all black
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 }
