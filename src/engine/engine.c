@@ -72,6 +72,7 @@ void engine_init()
 	// register default image file handlers
 	register_file_handler(".png", &asset_load_sdl_image, &asset_free_sdl_image);
 	register_file_handler(".jpg", &asset_load_sdl_image, &asset_free_sdl_image);
+	// default font file handlers
 	register_file_handler(".ttf", &asset_load_ttf_font, &asset_free_ttf_font);
 	register_file_handler(".otf", &asset_load_ttf_font, &asset_free_ttf_font);
 
