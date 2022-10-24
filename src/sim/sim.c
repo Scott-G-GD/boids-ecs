@@ -18,7 +18,7 @@ void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count
 	SDL_GetRendererOutputSize(renderer, &ww, &wh);
 	
 	SDL_Rect rect = {
-		0, 0, 300, wh
+		0, 0, 500, wh
 	};
 	
 	boid_available_area.w = ww;
@@ -31,34 +31,47 @@ void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count
 		boid_available_area.w = ww - rect.w;
 		
 		// render velocity and acceleration sliders
-		uiSameLine(2);
+		uiLabelNext("speed", 0.25f);
 		uiSlider(&boid_max_velocity, 10.f, 100.f, 5.f);
+		uiLabelNext("acceleration", 0.25f);
 		uiSlider(&boid_acceleration, 10.f, 100.f, 5.f);
 		
 		// alignment parameters
-		uiSameLine(2);
+		uiHeader("alignment");
+		
+		uiLabelNext("range", 0.25f);
 		uiSlider(&(alignment.range), 0.1f, 100.f, 1.f);
+		uiLabelNext("force", 0.25f);
 		uiSlider(&(alignment.force), 0.0f, 2.f, 0.01f);
 		
-		// separation range
-		uiSlider(&(separation.range), 0.1f, 100.f, 1.f);
-		
 		// cohesion parameters
-		uiSameLine(2);
+		uiHeader("cohesion");
+		
+		uiLabelNext("range", 0.25f);
 		uiSlider(&(cohesion.range), 0.1f, 100.f, 1.f);
+		uiLabelNext("force", 0.25f);
 		uiSlider(&(cohesion.force), 0.0f, 2.f, .01f);
 		
 		// mouse interaction parameters
-		uiSameLine(2);
+		uiHeader("mouse");
+		
+		uiLabelNext("range", 0.25f);
 		uiSlider(&(mouse_interact.range), 0.1f, 100.f, 1.f);
+		uiLabelNext("force", 0.25f);
 		uiSlider(&(mouse_interact.force), -200.f, 200.f, 10.f);
+		
+		
+		// separation range
+		uiHeader("separation");
+
+		uiSlider(&(separation.range), 0.1f, 100.f, 1.f);
 	}
 }
 
 void sim_config(engine_init_t* config)
 {
-	config->window_width = 1000;
-	config->window_height = 800;
+	config->window_width = 1700;
+	config->window_height = 1000;
 	config->window_init_flags |= SDL_WINDOW_RESIZABLE;
 	boid_spawn_num = 500;
 }
@@ -110,7 +123,10 @@ void sim_init()
 	
 	asset_handle_t blur_asset = load_asset("blur.png");
 	asset_handle_t arrow_asset = load_asset("boid.png");
+	asset_handle_t font_asset = load_asset("Inter-Regular.otf");
 	boid_texture = get_asset(arrow_asset);
+	uiSetFont(get_asset(font_asset));
+	
 	boid_available_area = (SDL_Rect){
 		.x = 0, .y = 0,
 		.w = w, .h = h
@@ -122,3 +138,4 @@ void sim_init()
 void sim_quit()
 {
 }
+
