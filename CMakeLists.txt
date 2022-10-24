@@ -12,6 +12,7 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 include_directories(SDL2 PRIVATE "${CMAKE_SOURCE_DIR}/src/engine" "${CMAKE_SOURCE_DIR}/include")
 
@@ -31,7 +32,7 @@ file(
 add_library(sim STATIC ${SIM_SRC})
 set_target_properties(sim PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-target_link_libraries(sim SDL2 SDL2_image ecs c m)
+target_link_libraries(sim SDL2 SDL2_image SDL2_ttf ecs c m)
 
 file(
 	GLOB_RECURSE
@@ -40,4 +41,4 @@ file(
 )
 
 add_executable(engine ${ENGINE_SRC})
-target_link_libraries(engine sim SDL2 SDL2_image ecs c m)
+target_link_libraries(engine sim SDL2 SDL2_image SDL2_ttf ecs c m)
