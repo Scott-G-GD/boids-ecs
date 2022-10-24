@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
 #include <time.h>
 #include <ecs.h>
@@ -38,6 +39,21 @@ void asset_free_sdl_image(void* instance)
 	}
 }
 
+void* asset_load_ttf_font(const char* filename)
+{
+	TTF_Font* font = TTF_OpenFont(filename, 50);
+	return font;
+}
+
+void asset_free_ttf_font(void* instance)
+{
+	TTF_Font* font = instance;
+	if(instance != NULL)
+	{
+		TTF_CloseFont(font);
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	engine_init();
@@ -56,6 +72,8 @@ void engine_init()
 	// register default image file handlers
 	register_file_handler(".png", &asset_load_sdl_image, &asset_free_sdl_image);
 	register_file_handler(".jpg", &asset_load_sdl_image, &asset_free_sdl_image);
+	register_file_handler(".ttf", &asset_load_ttf_font, &asset_free_ttf_font);
+	register_file_handler(".otf", &asset_load_ttf_font, &asset_free_ttf_font);
 
 	// load default init settings
 	engine_init_t init_settings;
@@ -65,6 +83,8 @@ void engine_init()
 
 	// init sdl, create window and create renderer from window
 	SDL_Init(init_settings.sdl_init_flags);
+	TTF_Init();
+	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 	window = SDL_CreateWindow("BOIDS!!",
 							  SDL_WINDOWPOS_CENTERED,
 							  SDL_WINDOWPOS_CENTERED,
