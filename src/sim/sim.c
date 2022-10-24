@@ -9,22 +9,24 @@
 
 int boid_spawn_num;
 
-void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count, float deltaTime)
+void system_draw_gui(ecsEntityId* entities, ecsComponentMask* mask, size_t count, float delta_time)
 {
-	static int showSliders = 1;
-	uiBeginFrame();
+	static int show_sliders = 1;
 	
 	int ww, wh;
 	SDL_GetRendererOutputSize(renderer, &ww, &wh);
+	
+	boid_available_area.w = ww;
+	boid_available_area.h = wh;
+	boid_available_area.x = 0;
 	
 	SDL_Rect rect = {
 		0, 0, 500, wh
 	};
 	
-	boid_available_area.w = ww;
-	boid_available_area.h = wh;
-	boid_available_area.x = 0;
-	if(uiBeginWindow(&rect, &showSliders))
+	uiBeginFrame();
+	
+	if(uiBeginWindow(&rect, &show_sliders))
 	{
 		// set the area boids will stay in to exclude the area of the ui
 		boid_available_area.x = rect.w;
@@ -106,8 +108,10 @@ void spawn_boids()
 
 void sim_init()
 {
+	// register boid_c as a component type
 	boid_component = ecsRegisterComponent(boid_c);
 	
+	// enable the functions that make boids boid
 	ecsEnableSystem(&system_boid_update_position,		boid_component,	ECS_QUERY_ALL,	8, 50);
 	ecsEnableSystem(&system_boid_update_near,		boid_component,	ECS_QUERY_ALL,	0, 100);
 	ecsEnableSystem(&system_draw_boids,			boid_component,	ECS_QUERY_ALL,	0, 200);
@@ -116,22 +120,30 @@ void sim_init()
 	ecsEnableSystem(&system_boids_alignment,	boid_component,	ECS_QUERY_ALL,	8, 410);
 	ecsEnableSystem(&system_boids_separation,	boid_component,	ECS_QUERY_ALL,	8, 420);
 	ecsEnableSystem(&system_boid_mouse,			boid_component,	ECS_QUERY_ALL,	8, 430);
+	
+	// enable the gui system
 	ecsEnableSystem(&system_draw_gui,			nocomponent,	ECS_NOQUERY,	0, 500);
 
 	int w, h;
 	SDL_GetRendererOutputSize(renderer, &w, &h);
 	
-	asset_handle_t blur_asset = load_asset("blur.png");
+	// load boid image
+	//asset_handle_t blur_asset = load_asset("blur.png");
 	asset_handle_t arrow_asset = load_asset("boid.png");
-	asset_handle_t font_asset = load_asset("Inter-Regular.otf");
+	// set boid texture
 	boid_texture = get_asset(arrow_asset);
+	
+	// load and set font
+	asset_handle_t font_asset = load_asset("Inter-Regular.otf");
 	uiSetFont(get_asset(font_asset));
 	
+	// set the initially available area
 	boid_available_area = (SDL_Rect){
 		.x = 0, .y = 0,
 		.w = w, .h = h
 	};
 	
+	// spawn a bunch of boids
 	spawn_boids();
 }
 
