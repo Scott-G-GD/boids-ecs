@@ -112,17 +112,17 @@ void sim_init()
 	boid_component = ecsRegisterComponent(boid_c);
 	
 	// enable the functions that make boids boid
-	ecsEnableSystem(&system_boid_update_position,		boid_component,	ECS_QUERY_ALL,	8, 50);
-	ecsEnableSystem(&system_boid_update_near,		boid_component,	ECS_QUERY_ALL,	0, 100);
-	ecsEnableSystem(&system_draw_boids,			boid_component,	ECS_QUERY_ALL,	0, 200);
-	ecsEnableSystem(&system_boids_wall_avoid,	boid_component,	ECS_QUERY_ALL,	8, 300);
-	ecsEnableSystem(&system_boids_cohesion,		boid_component,	ECS_QUERY_ALL,	8, 400);
-	ecsEnableSystem(&system_boids_alignment,	boid_component,	ECS_QUERY_ALL,	8, 410);
-	ecsEnableSystem(&system_boids_separation,	boid_component,	ECS_QUERY_ALL,	8, 420);
-	ecsEnableSystem(&system_boid_mouse,			boid_component,	ECS_QUERY_ALL,	8, 430);
+	ecsEnableSystem(&system_boid_update_position, boid_component, ECS_QUERY_ALL, 8, 50);
+	ecsEnableSystem(&system_boid_update_near, boid_component, ECS_QUERY_ALL, 0, 100);
+	ecsEnableSystem(&system_draw_boids, boid_component, ECS_QUERY_ALL, 0, 200);
+	ecsEnableSystem(&system_boids_wall_avoid, boid_component, ECS_QUERY_ALL, 8, 300);
+	ecsEnableSystem(&system_boids_cohesion, boid_component, ECS_QUERY_ALL, 8, 400);
+	ecsEnableSystem(&system_boids_alignment, boid_component, ECS_QUERY_ALL, 8, 410);
+	ecsEnableSystem(&system_boids_separation, boid_component, ECS_QUERY_ALL, 8, 420);
+	ecsEnableSystem(&system_boid_mouse, boid_component, ECS_QUERY_ALL, 8, 430);
 	
 	// enable the gui system
-	ecsEnableSystem(&system_draw_gui,			nocomponent,	ECS_NOQUERY,	0, 500);
+	ecsEnableSystem(&system_draw_gui, nocomponent, ECS_NOQUERY, 0, 500);
 
 	int w, h;
 	SDL_GetRendererOutputSize(renderer, &w, &h);
