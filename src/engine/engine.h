@@ -9,7 +9,10 @@ typedef struct engine_init_t {
 	uint32_t sdl_init_flags;
 	uint32_t renderer_init_flags;
 	int renderer_index;
+	int target_framerate;
 } engine_init_t;
+
+extern short is_render_frame;
 
 extern void default_engine_init_settings(engine_init_t*);
 

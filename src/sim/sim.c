@@ -76,6 +76,7 @@ void sim_config(engine_init_t* config)
 	config->window_height = 1000;
 	config->window_init_flags |= SDL_WINDOW_RESIZABLE;
 	boid_spawn_num = 500;
+	config->target_framerate = 24;
 }
 
 void spawn_boids()

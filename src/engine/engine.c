@@ -14,8 +14,12 @@ SDL_Renderer* renderer;
 int engine_wants_to_quit;
 float frame_start_time;
 float last_frame_time;
+short is_render_frame;
+float target_frame_time;
+float render_frame_time;
 
 void system_window_clear(ecsEntityId* entities, ecsComponentMask* components, size_t size, float delta_time);
+void system_window_display(ecsEntityId* entities, ecsComponentMask* components, size_t size, float delta_time);
 
 void engine_init();
 void engine_run();
@@ -81,6 +85,7 @@ void engine_init()
 	default_engine_init_settings(&init_settings);
 	// allow sim to adjust init settings as needed
 	sim_config(&init_settings);
+	target_frame_time = 1.f/(float)init_settings.target_framerate;
 
 	// init sdl, create window and create renderer from window
 	SDL_Init(init_settings.sdl_init_flags);
@@ -116,6 +121,8 @@ void engine_init()
 	
 	// initialize sim
 	sim_init();
+	
+	ecsEnableSystem(&system_window_display, nocomponent, ECS_NOQUERY, 0, 10000);
 	// run created tasks
 	ecsRunTasks();
 }
@@ -165,11 +172,24 @@ void engine_clean()
 
 void system_window_clear(ecsEntityId* entities, ecsComponentMask* components, size_t size, float delta_time)
 {
-	// swap buffer
-	SDL_RenderPresent(renderer);
-	// clear screen all black
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
+	render_frame_time += delta_time;
+	is_render_frame = render_frame_time >= target_frame_time;
+	
+	if(is_render_frame)
+	{
+		render_frame_time = 0;
+		// clear screen all black
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+	}
+}
+void system_window_display(ecsEntityId* entities, ecsComponentMask* components, size_t size, float delta_time)
+{
+	if(is_render_frame)
+	{
+		// swap buffer
+		SDL_RenderPresent(renderer);
+	}
 }
 
 void default_engine_init_settings(engine_init_t* init_settings)
@@ -179,7 +199,8 @@ void default_engine_init_settings(engine_init_t* init_settings)
 		.window_init_flags = SDL_WINDOW_SHOWN,
 		.sdl_init_flags = SDL_INIT_VIDEO,
 		.renderer_init_flags = SDL_RENDERER_ACCELERATED,
-		.renderer_index = -1
+		.renderer_index = -1,
+		.target_framerate = 60
 	};
 }
 

@@ -100,6 +100,8 @@ void system_boid_update_near(ecsEntityId* entities, ecsComponentMask* components
 
 void system_draw_boids(ecsEntityId* entities, ecsComponentMask* components, size_t count, float delta_time)
 {
+	if(!is_render_frame) return;
+	
 	boid_c* boid;
 	
 	int tw, th;
