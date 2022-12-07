@@ -1,10 +1,10 @@
 # build dirs
 xcode/
 kdev/
-Debug/
-Release/
-build/
-bin/
+[Dd]ebug/
+[Rr]elease/
+[Bb]uild/
+[Bb]in/
 
 # build files
 *.exe
