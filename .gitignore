@@ -3,6 +3,7 @@ xcode/
 kdev/
 Debug/
 Release/
+build/
 bin/
 
 # build files
